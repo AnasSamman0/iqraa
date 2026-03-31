@@ -16,6 +16,7 @@ const Books = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [markAsFinishedForAll, setMarkAsFinishedForAll] = useState(false);
 
   const fetchBooks = async () => {
     try {
@@ -39,9 +40,11 @@ const Books = () => {
         pdfUrl,
         startDate: startDate || undefined,
         endDate: endDate || undefined,
+        markAsFinishedForAll,
       });
       setShowAddModal(false);
       setTitle(''); setPdfUrl(''); setStartDate(''); setEndDate('');
+      setMarkAsFinishedForAll(false);
       fetchBooks();
     } catch (err: any) {
       alert(err.response?.data?.message || 'فشل إضافة الكتاب');
@@ -114,6 +117,19 @@ const Books = () => {
                   <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </div>
               </div>
+              <div className="form-group checkbox-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <input 
+                  type="checkbox" 
+                  id="markFinished" 
+                  checked={markAsFinishedForAll} 
+                  onChange={(e) => setMarkAsFinishedForAll(e.target.checked)} 
+                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                />
+                <label htmlFor="markFinished" style={{ cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                  تسجيل ككتاب تاريخي (تمت قراءته للجميع مسبقاً)
+                </label>
+              </div>
+
               <div className="modal-actions">
                 <button type="button" className="cancel-btn" onClick={() => setShowAddModal(false)}>إلغاء</button>
                 <button type="submit" className="primary-btn" disabled={submitting}>

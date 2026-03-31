@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import { Request, Response } from 'express';
+import User from '../models/User';
 import Book, { BookStatus } from '../models/Book';
 import FinishedBook from '../models/FinishedBook';
 
@@ -15,7 +17,7 @@ export const getBooks = async (req: Request, res: Response) => {
 // @desc  Create a book (admin)
 export const createBook = async (req: Request, res: Response) => {
   try {
-    const { title, pdfUrl, status, startDate, endDate } = req.body;
+    const { title, pdfUrl, status, startDate, endDate, markAsFinishedForAll } = req.body;
 
     if (!title || !pdfUrl) {
       return res.status(400).json({ message: 'عنوان الكتاب ورابط PDF مطلوبان' });
@@ -24,10 +26,24 @@ export const createBook = async (req: Request, res: Response) => {
     const book = await Book.create({
       title: title.trim(),
       pdfUrl: pdfUrl.trim(),
-      status: status || BookStatus.OPEN,
+      status: markAsFinishedForAll ? BookStatus.CLOSED : (status || BookStatus.OPEN),
       startDate: startDate ? new Date(startDate) : undefined,
       endDate: endDate ? new Date(endDate) : undefined,
     });
+
+    // If it's a historical/old book, mark it as finished for all existing students
+    if (markAsFinishedForAll) {
+      const students: any[] = await User.find({ role: 'student' });
+      
+      const finishedRecords = students.map(student => ({
+        userId: student._id,
+        bookId: book._id
+      }));
+
+      if (finishedRecords.length > 0) {
+        await FinishedBook.insertMany(finishedRecords);
+      }
+    }
 
     res.status(201).json(book);
   } catch (error) {
