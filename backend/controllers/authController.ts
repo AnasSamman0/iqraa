@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 
 const generateToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'mihrab_kitab_secret_2026', {
-    expiresIn: '30d',
+    expiresIn: '2h',
   });
 };
 

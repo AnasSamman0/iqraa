@@ -185,6 +185,10 @@
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
+  .layout-container {
+    flex-direction: column;
+  }
+
   .sidebar {
     position: fixed;
     top: 0;
