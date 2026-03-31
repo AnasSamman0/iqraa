@@ -2,6 +2,7 @@
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px 0 60px 0;
+  overflow-x: clip;
 }
 
 .back-btn {
@@ -54,6 +55,7 @@
   font-size: 26px;
   font-weight: 700;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .book-meta-tags {
@@ -96,6 +98,19 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.viewer-container {
+  height: clamp(360px, 72vh, 760px);
+  padding: 10px;
+  margin-top: 24px;
+}
+
+.viewer-frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
 }
 
 .primary-btn {
@@ -300,6 +315,7 @@
   margin: 0 0 12px 0;
   white-space: pre-wrap;
   font-size: 15px;
+  overflow-wrap: anywhere;
 }
 
 .submission-footer {
@@ -405,6 +421,12 @@
     border-radius: 16px;
   }
 
+  .viewer-container {
+    height: min(62dvh, 520px);
+    margin-top: 16px;
+    padding: 8px;
+  }
+
   .submissions-section {
     margin-top: 10px;
   }
@@ -472,9 +494,9 @@
   }
 
   .submission-header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
     margin-bottom: 16px;
     gap: 10px;
   }
@@ -495,6 +517,7 @@
 
   .submission-date {
     font-size: 12px;
+    padding-right: 48px;
   }
 
   .submission-content {
@@ -516,6 +539,25 @@
   .no-submissions {
     padding: 32px 20px;
     font-size: 15px;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .book-header-section {
+    padding: 18px 14px;
+  }
+
+  .book-title-info h1 {
+    font-size: 1.3rem;
+  }
+
+  .viewer-container {
+    height: min(56dvh, 440px);
+  }
+
+  .submission-card {
+    padding: 16px;
     border-radius: 16px;
   }
 }

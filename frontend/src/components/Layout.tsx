@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
 import { Navigate, Link, useLocation, Routes, Route } from 'react-router-dom';
@@ -14,6 +14,19 @@ const Layout = () => {
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (window.innerWidth > 768) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = mobileMenuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [mobileMenuOpen]);
 
   if (loading) {
     return (
@@ -41,7 +54,7 @@ const Layout = () => {
     <div className="layout-container">
       {/* Mobile Topbar */}
       <div className="mobile-topbar">
-        <button className="menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+        <button className="menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label={mobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}>
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
         <div className="logo mobile-logo">

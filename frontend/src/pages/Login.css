@@ -124,7 +124,7 @@
 @media (max-width: 500px) {
   .login-container {
     padding: 16px;
-    align-items: flex-end; /* لدفع الكارد للأسفل قليلا في الموبايل */
+    align-items: center;
   }
 
   .login-card {

@@ -148,10 +148,10 @@ const BookDetail = () => {
       </div>
 
       {showViewer && (
-        <div className="viewer-container animate-fade-in glass-card" style={{ height: '700px', padding: '10px', marginTop: '24px' }}>
+        <div className="viewer-container animate-fade-in glass-card">
           <iframe 
             src={book.pdfUrl.startsWith('http') ? `https://docs.google.com/viewer?url=${encodeURIComponent(book.pdfUrl)}&embedded=true` : getFullUrl(book.pdfUrl)}
-            style={{ width: '100%', height: '100%', border: 'none', borderRadius: '12px' }}
+            className="viewer-frame"
             title="Book Viewer"
           />
         </div>

@@ -63,6 +63,7 @@
 .book-card-wrapper {
   position: relative;
   transition: var(--transition);
+  min-width: 0;
 }
 
 .book-card {
@@ -116,13 +117,21 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.4;
+  word-break: break-word;
 }
 
 .book-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   margin-top: auto;
+}
+
+.book-meta .date {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: left;
 }
 
 .status-badge {
@@ -159,6 +168,30 @@
   font-size: 0.85rem;
   font-weight: 700;
   transition: var(--transition);
+}
+
+.book-card-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  background: var(--bg-secondary);
+  border: 1px dashed var(--border-color);
+  border-radius: 18px;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-state h3 {
+  color: var(--text-primary);
 }
 
 .admin-mini-btn:hover {
@@ -230,10 +263,12 @@
   .book-admin-actions {
     padding: 12px 16px;
     gap: 8px;
+    flex-wrap: wrap;
+    justify-content: stretch;
   }
 
   .admin-mini-btn {
-    flex: 1;
+    flex: 1 1 140px;
     justify-content: center;
     padding: 10px 12px;
     font-size: 0.8rem;
@@ -246,5 +281,20 @@
 
   .book-card-link {
     display: block;
+  }
+}
+
+@media (max-width: 420px) {
+  .book-meta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .book-meta .date {
+    text-align: right;
+  }
+
+  .admin-mini-btn {
+    flex: 1 1 100%;
   }
 }

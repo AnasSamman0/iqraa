@@ -5,6 +5,7 @@
 .table-container {
   overflow: hidden;
   margin-top: 24px;
+  width: 100%;
 }
 
 table {
@@ -27,6 +28,7 @@ td {
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   transition: var(--transition);
+  word-break: break-word;
 }
 
 td:first-child {
@@ -51,6 +53,7 @@ tr:hover td {
   align-items: center;
   gap: 12px;
   font-weight: 700;
+  min-width: 0;
 }
 
 .avatar {
@@ -118,7 +121,8 @@ tr:hover td {
   td {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: 12px;
     padding: 0;
     background: transparent;
     border: none;
@@ -141,6 +145,13 @@ tr:hover td {
 
   .user-name-cell {
     gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  td:nth-child(2) {
+    text-align: left;
+    direction: ltr;
+    font-size: 0.9rem;
   }
 
   .delete-btn {
@@ -161,5 +172,17 @@ tr:hover td {
   .flex-header .primary-btn {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 420px) {
+  tr {
+    padding: 16px;
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  td::before {
+    font-size: 0.78rem;
   }
 }
