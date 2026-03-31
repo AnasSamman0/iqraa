@@ -17,6 +17,7 @@ const Books = () => {
   const [endDate, setEndDate] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [markAsFinishedForAll, setMarkAsFinishedForAll] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const fetchBooks = async () => {
     try {
@@ -31,13 +32,38 @@ const Books = () => {
 
   useEffect(() => { fetchBooks(); }, []);
 
+  const handleFileUpload = async () => {
+    if (!selectedFile) return null;
+    const formData = new FormData();
+    formData.append('book', selectedFile);
+    try {
+      const { data } = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return data; // Returns the file path like /uploads/file.pdf
+    } catch (err) {
+      console.error('File upload failed', err);
+      throw new Error('فشل رفع الملف من جهازك');
+    }
+  };
+
   const handleAddBook = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
+      let finalPdfUrl = pdfUrl;
+
+      // If a file was selected, upload it first
+      if (selectedFile) {
+        const uploadedPath = await handleFileUpload();
+        if (uploadedPath) {
+          finalPdfUrl = uploadedPath;
+        }
+      }
+
       await api.post('/books', {
         title,
-        pdfUrl,
+        pdfUrl: finalPdfUrl,
         startDate: startDate || undefined,
         endDate: endDate || undefined,
         markAsFinishedForAll,
@@ -45,9 +71,10 @@ const Books = () => {
       setShowAddModal(false);
       setTitle(''); setPdfUrl(''); setStartDate(''); setEndDate('');
       setMarkAsFinishedForAll(false);
+      setSelectedFile(null);
       fetchBooks();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'فشل إضافة الكتاب');
+      alert(err.message || err.response?.data?.message || 'فشل إضافة الكتاب');
     } finally {
       setSubmitting(false);
     }
@@ -75,6 +102,13 @@ const Books = () => {
   const filtered = books.filter((b: any) =>
     b.title.toLowerCase().includes(search.toLowerCase())
   );
+
+  const getFullUrl = (url: string) => {
+    if (!url) return '#';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+    return `${baseUrl}${url}`;
+  };
 
   return (
     <div className="books-content animate-fade-in">
@@ -104,9 +138,27 @@ const Books = () => {
                 <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="مثال: كتاب الأخلاق الإسلامية" />
               </div>
               <div className="form-group">
-                <label>رابط الكتاب (PDF) *</label>
-                <input type="url" required value={pdfUrl} onChange={(e) => setPdfUrl(e.target.value)} placeholder="https://..." />
+                <label>رابط الكتاب (Google Drive أو ويب)</label>
+                <input 
+                  type="text" 
+                  value={pdfUrl} 
+                  onChange={(e) => setPdfUrl(e.target.value)} 
+                  placeholder="https://drive.google.com/..." 
+                  disabled={!!selectedFile}
+                />
               </div>
+
+              <div className="form-group" style={{ border: '2px dashed var(--border-color)', padding: '15px', borderRadius: '12px', textAlign: 'center', background: selectedFile ? 'rgba(var(--accent-rgb), 0.05)' : 'transparent' }}>
+                <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>أو ارفع ملف من جهازك</label>
+                <input 
+                  type="file" 
+                  accept=".pdf,.doc,.docx,.epub" 
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  className="file-input"
+                />
+                {selectedFile && <p style={{ marginTop: '5px', fontSize: '0.8rem', color: 'var(--accent)' }}>ملف مختار: {selectedFile.name}</p>}
+              </div>
+
               <div className="form-row">
                 <div className="form-group">
                   <label>تاريخ بداية القراءة</label>
@@ -117,6 +169,7 @@ const Books = () => {
                   <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </div>
               </div>
+
               <div className="form-group checkbox-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                 <input 
                   type="checkbox" 
@@ -125,8 +178,8 @@ const Books = () => {
                   onChange={(e) => setMarkAsFinishedForAll(e.target.checked)} 
                   style={{ width: '18px', height: '18px', cursor: 'pointer' }}
                 />
-                <label htmlFor="markFinished" style={{ cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                  تسجيل ككتاب تاريخي (تمت قراءته للجميع مسبقاً)
+                <label htmlFor="markFinished" style={{ cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>
+                  قديم
                 </label>
               </div>
 

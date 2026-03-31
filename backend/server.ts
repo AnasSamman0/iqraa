@@ -4,9 +4,11 @@ import cors from 'cors';
 import connectDB from './config/db';
 import { importData } from './seeder';
 
+import path from 'path';
 import authRoutes from './routes/authRoutes';
 import bookRoutes from './routes/bookRoutes';
 import submissionRoutes from './routes/submissionRoutes';
+import uploadRoutes from './routes/uploadRoutes';
 
 dotenv.config();
 
@@ -25,6 +27,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use('/api/upload', uploadRoutes);
+
+const __dirname_resolved = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname_resolved, '/uploads')));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));

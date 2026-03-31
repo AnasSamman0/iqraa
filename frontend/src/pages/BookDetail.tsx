@@ -86,6 +86,13 @@ const BookDetail = () => {
     }
   };
 
+  const getFullUrl = (url: string) => {
+    if (!url) return '#';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+    return `${baseUrl}${url}`;
+  };
+
   if (loading) return <div className="loading-state">جاري التحميل...</div>;
   if (!book) return <div className="loading-state">الكتاب غير موجود</div>;
 
@@ -124,7 +131,7 @@ const BookDetail = () => {
           </div>
 
           <div className="book-actions">
-            <a href={book.pdfUrl} target="_blank" rel="noreferrer" className="primary-btn outline">
+            <a href={getFullUrl(book.pdfUrl)} target="_blank" rel="noreferrer" className="primary-btn outline">
               قراءة الكتاب (PDF) ↗
             </a>
             {user?.role === 'student' && !mySubmission && (
