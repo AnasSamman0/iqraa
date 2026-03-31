@@ -70,3 +70,40 @@ export const deleteSubmission = async (req: Request, res: Response) => {
     res.status(404).json({ message: 'Submission not found' });
   }
 };
+
+// @desc  Get top readers for leaderboard
+// @route GET /api/submissions/leaderboard
+export const getLeaderboard = async (req: Request, res: Response) => {
+  try {
+    const leaderboard = await FinishedBook.aggregate([
+      {
+        $group: {
+          _id: '$userId',
+          booksCount: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+      { $unwind: '$user' },
+      {
+        $project: {
+          _id: 1,
+          booksCount: 1,
+          name: '$user.name',
+          email: '$user.email',
+        },
+      },
+      { $sort: { booksCount: -1 } },
+      { $limit: 10 },
+    ]);
+    res.json(leaderboard);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching leaderboard' });
+  }
+};

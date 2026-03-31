@@ -17,6 +17,7 @@ const BookDetail = () => {
   const [content, setContent] = useState('');
   const [customDate, setCustomDate] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showViewer, setShowViewer] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -131,17 +132,30 @@ const BookDetail = () => {
           </div>
 
           <div className="book-actions">
+            <button onClick={() => setShowViewer(!showViewer)} className="primary-btn">
+              {showViewer ? 'إغلاق القارئ' : 'قراءة المحتوى الآن 📖'}
+            </button>
             <a href={getFullUrl(book.pdfUrl)} target="_blank" rel="noreferrer" className="primary-btn outline">
-              قراءة الكتاب (PDF) ↗
+              تحميل / فتح خارجي ↗
             </a>
             {user?.role === 'student' && !mySubmission && (
               <button onClick={handleMarkFinished} className="success-btn">
-                <CheckCircle size={18} /> أنهيت قراءة الكتاب
+                <CheckCircle size={18} /> أنهيت القراءة
               </button>
             )}
           </div>
         </div>
       </div>
+
+      {showViewer && (
+        <div className="viewer-container animate-fade-in glass-card" style={{ height: '700px', padding: '10px', marginTop: '24px' }}>
+          <iframe 
+            src={book.pdfUrl.startsWith('http') ? `https://docs.google.com/viewer?url=${encodeURIComponent(book.pdfUrl)}&embedded=true` : getFullUrl(book.pdfUrl)}
+            style={{ width: '100%', height: '100%', border: 'none', borderRadius: '12px' }}
+            title="Book Viewer"
+          />
+        </div>
+      )}
 
       <div className="submissions-section">
         <h2>المداخلات والتأملات ({submissions.length})</h2>
