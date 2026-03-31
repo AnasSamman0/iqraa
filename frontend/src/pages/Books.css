@@ -53,6 +53,109 @@
   font-size: 1rem;
 }
 
+.book-modal-content {
+  max-width: 620px;
+}
+
+.book-modal-form {
+  width: 100%;
+}
+
+.file-upload-group {
+  position: relative;
+  border: 2px dashed var(--border-color);
+  padding: 24px 16px;
+  border-radius: 16px;
+  text-align: center;
+  background: var(--bg-tertiary);
+  transition: var(--transition);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.file-upload-group.has-file {
+  background: rgba(var(--accent-rgb), 0.05);
+  border-color: rgba(var(--accent-rgb), 0.45);
+}
+
+.file-upload-trigger {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  min-height: 132px;
+  justify-content: center;
+}
+
+.file-upload-button {
+  background: var(--bg-secondary);
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  color: var(--accent);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  text-align: center;
+}
+
+.file-upload-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 100%;
+}
+
+.file-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.selected-file-name {
+  margin-top: 16px;
+  padding: 10px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 10px;
+  color: #34d399;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.book-checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.book-checkbox-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.book-checkbox-label {
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 /* Grid Design */
 .books-grid {
   display: grid;
@@ -239,6 +342,45 @@
     border-radius: 14px;
   }
 
+  .book-modal-content {
+    max-width: 100%;
+  }
+
+  .book-modal-form {
+    gap: 0;
+  }
+
+  .file-upload-group {
+    padding: 18px 14px;
+    border-radius: 16px;
+  }
+
+  .file-upload-trigger {
+    min-height: 120px;
+    gap: 12px;
+  }
+
+  .file-upload-button {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 14px;
+  }
+
+  .file-upload-note {
+    font-size: 0.82rem;
+  }
+
+  .selected-file-name {
+    font-size: 0.88rem;
+    padding: 12px;
+  }
+
+  .book-checkbox-group {
+    align-items: flex-start;
+    padding: 14px;
+    border-radius: 14px;
+  }
+
   .books-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -285,6 +427,23 @@
 }
 
 @media (max-width: 420px) {
+  .file-upload-group {
+    padding: 16px 12px;
+  }
+
+  .file-upload-trigger {
+    min-height: 108px;
+  }
+
+  .book-checkbox-group {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .book-checkbox-label {
+    font-size: 0.95rem;
+  }
+
   .book-meta {
     flex-direction: column;
     align-items: flex-start;

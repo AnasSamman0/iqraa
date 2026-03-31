@@ -8,6 +8,24 @@
   width: 100%;
 }
 
+.user-modal-content {
+  max-width: 580px;
+}
+
+.user-modal-form {
+  width: 100%;
+}
+
+.user-role-select {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  appearance: none;
+}
+
 table {
   width: 100%;
   border-collapse: separate;
@@ -51,21 +69,8 @@ tr:hover td {
 .user-name-cell {
   display: flex;
   align-items: center;
-  gap: 12px;
   font-weight: 700;
   min-width: 0;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent), #1d4ed8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  color: white;
 }
 
 .status-badge {
@@ -110,6 +115,16 @@ tr:hover td {
 @media (max-width: 768px) {
   .users-content {
     padding: 16px 0;
+  }
+
+  .user-modal-content {
+    max-width: 100%;
+  }
+
+  .user-role-select {
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 16px;
   }
 
   .table-container {
@@ -172,8 +187,9 @@ tr:hover td {
   }
 
   .user-name-cell {
-    gap: 10px;
-    flex-wrap: wrap;
+    flex: 1;
+    justify-content: flex-end;
+    text-align: right;
   }
 
   td:nth-child(2) {
@@ -206,6 +222,10 @@ tr:hover td {
 }
 
 @media (max-width: 420px) {
+  .user-role-select {
+    padding: 14px 16px;
+  }
+
   tr {
     padding: 16px;
     border-radius: 16px;

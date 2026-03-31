@@ -47,6 +47,20 @@ const Books = () => {
     }
   };
 
+  const resetAddBookForm = () => {
+    setTitle('');
+    setPdfUrl('');
+    setStartDate('');
+    setEndDate('');
+    setMarkAsFinishedForAll(false);
+    setSelectedFile(null);
+  };
+
+  const closeAddBookModal = () => {
+    setShowAddModal(false);
+    resetAddBookForm();
+  };
+
   const handleAddBook = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -68,10 +82,7 @@ const Books = () => {
         endDate: endDate || undefined,
         markAsFinishedForAll,
       });
-      setShowAddModal(false);
-      setTitle(''); setPdfUrl(''); setStartDate(''); setEndDate('');
-      setMarkAsFinishedForAll(false);
-      setSelectedFile(null);
+      closeAddBookModal();
       fetchBooks();
     } catch (err: any) {
       alert(err.message || err.response?.data?.message || 'فشل إضافة الكتاب');
@@ -126,13 +137,13 @@ const Books = () => {
 
       {/* Add Book Modal */}
       {showAddModal && (
-        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowAddModal(false)}>
-          <div className="modal-content">
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && closeAddBookModal()}>
+          <div className="modal-content book-modal-content">
             <div className="modal-header">
               <h2>إضافة كتاب لـ محراب و كتاب</h2>
-              <button className="close-btn" onClick={() => setShowAddModal(false)}><X size={20} /></button>
+              <button className="close-btn" onClick={closeAddBookModal}><X size={20} /></button>
             </div>
-            <form onSubmit={handleAddBook} className="add-book-form">
+            <form onSubmit={handleAddBook} className="add-book-form book-modal-form">
               <div className="form-group">
                 <label>عنوان الكتاب *</label>
                 <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="مثال: كتاب الأخلاق الإسلامية" />
@@ -148,55 +159,21 @@ const Books = () => {
                 />
               </div>
 
-              <div className="form-group file-upload-group" style={{ 
-                border: '2px dashed var(--border-color)', 
-                padding: '24px 16px', 
-                borderRadius: '16px', 
-                textAlign: 'center', 
-                background: selectedFile ? 'rgba(var(--accent-rgb), 0.05)' : 'var(--bg-tertiary)',
-                transition: 'var(--transition)',
-                cursor: 'pointer',
-                position: 'relative'
-              }}>
-                <label style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ 
-                    background: 'var(--bg-secondary)', 
-                    padding: '10px 20px', 
-                    borderRadius: '12px', 
-                    border: '1px solid var(--border-color)',
-                    color: 'var(--accent)',
-                    fontWeight: 'bold',
-                    display: 'inline-block'
-                  }}>
+              <div className={`form-group file-upload-group ${selectedFile ? 'has-file' : ''}`}>
+                <label className="file-upload-trigger">
+                  <span className="file-upload-button">
                     اختر ملف من جهازك
                   </span>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>أو اسحب الملف وأفلته هنا (PDF, DOC)</span>
-                  
+                  <span className="file-upload-note">أو اسحب الملف وأفلته هنا (PDF, DOC)</span>
                   <input 
                     type="file" 
                     accept=".pdf,.doc,.docx,.epub" 
                     onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
                     className="file-input"
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      width: '100%',
-                      height: '100%',
-                      opacity: 0,
-                      cursor: 'pointer'
-                    }}
                   />
                 </label>
                 {selectedFile && (
-                  <div style={{ 
-                    marginTop: '16px', 
-                    padding: '10px', 
-                    background: 'rgba(16, 185, 129, 0.1)', 
-                    borderRadius: '8px',
-                    color: '#34d399',
-                    fontSize: '0.9rem',
-                    fontWeight: 'bold'
-                  }}>
+                  <div className="selected-file-name">
                     ✅ تم اختيار: {selectedFile.name}
                   </div>
                 )}
@@ -213,21 +190,21 @@ const Books = () => {
                 </div>
               </div>
 
-              <div className="form-group checkbox-group" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '10px', background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+              <div className="form-group checkbox-group book-checkbox-group">
                 <input 
                   type="checkbox" 
                   id="markFinished" 
                   checked={markAsFinishedForAll} 
                   onChange={(e) => setMarkAsFinishedForAll(e.target.checked)} 
-                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                  className="book-checkbox-input"
                 />
-                <label htmlFor="markFinished" style={{ cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>
+                <label htmlFor="markFinished" className="book-checkbox-label">
                   قديم
                 </label>
               </div>
 
               <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={() => setShowAddModal(false)}>إلغاء</button>
+                <button type="button" className="cancel-btn" onClick={closeAddBookModal}>إلغاء</button>
                 <button type="submit" className="primary-btn" disabled={submitting}>
                   {submitting ? 'جاري الحفظ...' : 'حفظ وإدراج'}
                 </button>

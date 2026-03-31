@@ -30,6 +30,18 @@ const Users = () => {
     fetchUsers();
   }, []);
 
+  const resetAddUserForm = () => {
+    setName('');
+    setEmail('');
+    setPassword('');
+    setRole('student');
+  };
+
+  const closeAddUserModal = () => {
+    setShowAddModal(false);
+    resetAddUserForm();
+  };
+
   const handleDelete = async (id: string) => {
     if (confirm('هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائياً؟')) {
       try {
@@ -45,8 +57,7 @@ const Users = () => {
     e.preventDefault();
     try {
       await api.post('/auth/register', { name, email, password, role });
-      setShowAddModal(false);
-      setName(''); setEmail(''); setPassword('');
+      closeAddUserModal();
       fetchUsers();
       alert('تم إضافة الطالب بنجاح');
     } catch (err: any) {
@@ -72,14 +83,14 @@ const Users = () => {
 
       {/* Add User Modal */}
       {showAddModal && (
-        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowAddModal(false)}>
-          <div className="modal-content">
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && closeAddUserModal()}>
+          <div className="modal-content user-modal-content">
             <div className="modal-header">
               <h2>إضافة مشترك جديد لـ محراب و كتاب</h2>
-              <button className="close-btn" onClick={() => setShowAddModal(false)}><X size={20} /></button>
+              <button className="close-btn" onClick={closeAddUserModal}><X size={20} /></button>
             </div>
             
-            <form onSubmit={handleCreateUser} className="add-book-form">
+            <form onSubmit={handleCreateUser} className="add-book-form user-modal-form">
               <div className="form-group">
                 <label>الاسم الكامل</label>
                 <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="مثال: طارق" />
@@ -96,7 +107,7 @@ const Users = () => {
                 </div>
                 <div className="form-group">
                   <label>الصلاحية</label>
-                  <select value={role} onChange={(e) => setRole(e.target.value)} style={{width: '100%', padding:'10px', borderRadius:'8px', background:'var(--bg-tertiary)', color:'var(--text-primary)', border:'1px solid var(--border-color)'}}>
+                  <select value={role} onChange={(e) => setRole(e.target.value)} className="user-role-select">
                     <option value="student">طالب عروض</option>
                     <option value="admin">مشرف محراب و كتاب</option>
                   </select>
@@ -104,7 +115,7 @@ const Users = () => {
               </div>
 
               <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={() => setShowAddModal(false)}>إلغاء</button>
+                <button type="button" className="cancel-btn" onClick={closeAddUserModal}>إلغاء</button>
                 <button type="submit" className="primary-btn">إنشاء الحساب</button>
               </div>
             </form>
@@ -130,10 +141,7 @@ const Users = () => {
               {users.map((u: any) => (
                 <tr key={u._id}>
                   <td data-label="اسم المشارك">
-                    <div className="user-name-cell">
-                      <div className="avatar">{u.name.charAt(0)}</div>
-                      {u.name}
-                    </div>
+                    <div className="user-name-cell">{u.name}</div>
                   </td>
                   <td data-label="الحساب">{u.email}</td>
                   <td data-label="الصلاحية">
