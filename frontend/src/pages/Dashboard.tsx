@@ -59,7 +59,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-content animate-fade-in container">
       <header className="page-header gold-gradient-text">
-        <h1>{user?.role === 'admin' ? 'لوحة تحكم المشرف' : `أهلاً بك، {user?.name}`}</h1>
+        <h1>{user?.role === 'admin' ? 'لوحة تحكم المشرف' : `أهلاً بك يا ${user?.name}`}</h1>
         <p className="subtitle">نظرة عامة على نشاطك وإنجازاتك في المحراب</p>
       </header>
 
