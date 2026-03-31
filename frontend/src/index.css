@@ -78,7 +78,7 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeInUp 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .animate-scale-in {

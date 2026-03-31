@@ -6,10 +6,14 @@ import { BookOpen, Users, LayoutDashboard, LogOut, Moon, Sun, Menu, X } from 'lu
 import './Layout.css';
 
 const Layout = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, loading, logout } = useContext(AuthContext);
   const { isDarkMode, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  if (loading) {
+    return <div className="loading-state">جاري التحقق...</div>;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;
