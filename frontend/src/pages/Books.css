@@ -53,6 +53,63 @@
   font-size: 1rem;
 }
 
+.add-book-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.entry-page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.entry-back-btn {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 14px;
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.entry-back-btn:hover {
+  border-color: rgba(var(--accent-rgb), 0.45);
+  color: var(--accent);
+}
+
+.entry-card {
+  max-width: 760px;
+  width: 100%;
+}
+
+.entry-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.entry-cancel-btn {
+  min-width: 132px;
+}
+
+.entry-error-message {
+  margin-bottom: 20px;
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error);
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
 .book-modal-content {
   max-width: 620px;
 }
@@ -342,6 +399,30 @@
     border-radius: 14px;
   }
 
+  .entry-page-header {
+    text-align: center;
+  }
+
+  .entry-back-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .entry-card {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .entry-form-actions {
+    flex-direction: column;
+  }
+
+  .entry-form-actions .primary-btn,
+  .entry-cancel-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .book-modal-content {
     max-width: 100%;
   }
@@ -427,6 +508,10 @@
 }
 
 @media (max-width: 420px) {
+  .entry-card {
+    padding: 16px;
+  }
+
   .file-upload-group {
     padding: 16px 12px;
   }

@@ -5,8 +5,10 @@ import { Navigate, Link, useLocation, Routes, Route } from 'react-router-dom';
 import { BookOpen, Users as UsersIcon, LayoutDashboard, LogOut, Moon, Sun, Menu, X } from 'lucide-react';
 import Dashboard from '../pages/Dashboard';
 import Books from '../pages/Books';
+import AddBook from '../pages/AddBook';
 import BookDetail from '../pages/BookDetail';
 import Users from '../pages/Users';
+import AddUser from '../pages/AddUser';
 import './Layout.css';
 
 const Layout = () => {
@@ -116,8 +118,10 @@ const Layout = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/books" element={<Books />} />
+          <Route path="/books/new" element={<AddBook />} />
           <Route path="/books/:id" element={<BookDetail />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/new" element={<AddUser />} />
         </Routes>
       </main>
     </div>

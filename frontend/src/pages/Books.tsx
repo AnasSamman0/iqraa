@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { BookOpen, Search, Plus, X, Trash2, Lock, Unlock } from 'lucide-react';
+import { BookOpen, Search, Plus, Trash2, Lock, Unlock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import './Books.css';
@@ -10,14 +10,6 @@ const Books = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [title, setTitle] = useState('');
-  const [pdfUrl, setPdfUrl] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [markAsFinishedForAll, setMarkAsFinishedForAll] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const fetchBooks = async () => {
     try {
@@ -31,65 +23,6 @@ const Books = () => {
   };
 
   useEffect(() => { fetchBooks(); }, []);
-
-  const handleFileUpload = async () => {
-    if (!selectedFile) return null;
-    const formData = new FormData();
-    formData.append('book', selectedFile);
-    try {
-      const { data } = await api.post('/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      return data; // Returns the file path like /uploads/file.pdf
-    } catch (err) {
-      console.error('File upload failed', err);
-      throw new Error('فشل رفع الملف من جهازك');
-    }
-  };
-
-  const resetAddBookForm = () => {
-    setTitle('');
-    setPdfUrl('');
-    setStartDate('');
-    setEndDate('');
-    setMarkAsFinishedForAll(false);
-    setSelectedFile(null);
-  };
-
-  const closeAddBookModal = () => {
-    setShowAddModal(false);
-    resetAddBookForm();
-  };
-
-  const handleAddBook = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      let finalPdfUrl = pdfUrl;
-
-      // If a file was selected, upload it first
-      if (selectedFile) {
-        const uploadedPath = await handleFileUpload();
-        if (uploadedPath) {
-          finalPdfUrl = uploadedPath;
-        }
-      }
-
-      await api.post('/books', {
-        title,
-        pdfUrl: finalPdfUrl,
-        startDate: startDate || undefined,
-        endDate: endDate || undefined,
-        markAsFinishedForAll,
-      });
-      closeAddBookModal();
-      fetchBooks();
-    } catch (err: any) {
-      alert(err.message || err.response?.data?.message || 'فشل إضافة الكتاب');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const handleDeleteBook = async (id: string, bookTitle: string) => {
     if (!confirm(`هل أنت متأكد من حذف كتاب "${bookTitle}"؟`)) return;
@@ -129,90 +62,11 @@ const Books = () => {
           <p className="subtitle">تصفح مواد القراءة المتوفرة</p>
         </div>
         {user?.role === 'admin' && (
-          <button className="primary-btn" onClick={() => setShowAddModal(true)}>
+          <Link to="/books/new" className="primary-btn">
             <Plus size={18} /> إضافة كتاب
-          </button>
+          </Link>
         )}
       </header>
-
-      {/* Add Book Modal */}
-      {showAddModal && (
-        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && closeAddBookModal()}>
-          <div className="modal-content book-modal-content">
-            <div className="modal-header">
-              <h2>إضافة كتاب لـ محراب و كتاب</h2>
-              <button className="close-btn" onClick={closeAddBookModal}><X size={20} /></button>
-            </div>
-            <form onSubmit={handleAddBook} className="add-book-form book-modal-form">
-              <div className="form-group">
-                <label>عنوان الكتاب *</label>
-                <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="مثال: كتاب الأخلاق الإسلامية" />
-              </div>
-              <div className="form-group">
-                <label>رابط الكتاب (Google Drive أو ويب)</label>
-                <input 
-                  type="text" 
-                  value={pdfUrl} 
-                  onChange={(e) => setPdfUrl(e.target.value)} 
-                  placeholder="https://drive.google.com/..." 
-                  disabled={!!selectedFile}
-                />
-              </div>
-
-              <div className={`form-group file-upload-group ${selectedFile ? 'has-file' : ''}`}>
-                <label className="file-upload-trigger">
-                  <span className="file-upload-button">
-                    اختر ملف من جهازك
-                  </span>
-                  <span className="file-upload-note">أو اسحب الملف وأفلته هنا (PDF, DOC)</span>
-                  <input 
-                    type="file" 
-                    accept=".pdf,.doc,.docx,.epub" 
-                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                    className="file-input"
-                  />
-                </label>
-                {selectedFile && (
-                  <div className="selected-file-name">
-                    ✅ تم اختيار: {selectedFile.name}
-                  </div>
-                )}
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>تاريخ بداية القراءة</label>
-                  <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                </div>
-                <div className="form-group">
-                  <label>تاريخ الانتهاء</label>
-                  <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                </div>
-              </div>
-
-              <div className="form-group checkbox-group book-checkbox-group">
-                <input 
-                  type="checkbox" 
-                  id="markFinished" 
-                  checked={markAsFinishedForAll} 
-                  onChange={(e) => setMarkAsFinishedForAll(e.target.checked)} 
-                  className="book-checkbox-input"
-                />
-                <label htmlFor="markFinished" className="book-checkbox-label">
-                  قديم
-                </label>
-              </div>
-
-              <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={closeAddBookModal}>إلغاء</button>
-                <button type="submit" className="primary-btn" disabled={submitting}>
-                  {submitting ? 'جاري الحفظ...' : 'حفظ وإدراج'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       <div className="controls-bar">
         <div className="search-box">

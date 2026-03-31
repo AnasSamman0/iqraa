@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
-import { UserPlus, Trash2, X } from 'lucide-react';
+import { UserPlus, Trash2 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 import api from '../api';
 import './Users.css';
 
@@ -8,12 +9,6 @@ const Users = () => {
   const { user: currentUser } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
-  
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('student');
 
   const fetchUsers = async () => {
     try {
@@ -30,18 +25,6 @@ const Users = () => {
     fetchUsers();
   }, []);
 
-  const resetAddUserForm = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-    setRole('student');
-  };
-
-  const closeAddUserModal = () => {
-    setShowAddModal(false);
-    resetAddUserForm();
-  };
-
   const handleDelete = async (id: string) => {
     if (confirm('هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائياً؟')) {
       try {
@@ -50,18 +33,6 @@ const Users = () => {
       } catch (err) {
         console.error(err);
       }
-    }
-  };
-
-  const handleCreateUser = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await api.post('/auth/register', { name, email, password, role });
-      closeAddUserModal();
-      fetchUsers();
-      alert('تم إضافة الطالب بنجاح');
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'البريد الإلكتروني موجود مسبقاً أو حدث خطأ');
     }
   };
 
@@ -76,52 +47,10 @@ const Users = () => {
           <h1>إدارة المستخدمين</h1>
           <p className="subtitle">صلاحيات الطلاب وإضافة المشتركين لـ محراب و كتاب</p>
         </div>
-        <button className="primary-btn" onClick={() => setShowAddModal(true)}>
+        <Link to="/users/new" className="primary-btn">
           <UserPlus size={18} /> إضافة طالب جديد
-        </button>
+        </Link>
       </header>
-
-      {/* Add User Modal */}
-      {showAddModal && (
-        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && closeAddUserModal()}>
-          <div className="modal-content user-modal-content">
-            <div className="modal-header">
-              <h2>إضافة مشترك جديد لـ محراب و كتاب</h2>
-              <button className="close-btn" onClick={closeAddUserModal}><X size={20} /></button>
-            </div>
-            
-            <form onSubmit={handleCreateUser} className="add-book-form user-modal-form">
-              <div className="form-group">
-                <label>الاسم الكامل</label>
-                <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="مثال: طارق" />
-              </div>
-              <div className="form-group">
-                <label>البريد الإلكتروني</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="student@example.com" />
-              </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label>كلمة المرور المبدئية</label>
-                  <input type="text" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="******" />
-                </div>
-                <div className="form-group">
-                  <label>الصلاحية</label>
-                  <select value={role} onChange={(e) => setRole(e.target.value)} className="user-role-select">
-                    <option value="student">طالب عروض</option>
-                    <option value="admin">مشرف محراب و كتاب</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="modal-actions">
-                <button type="button" className="cancel-btn" onClick={closeAddUserModal}>إلغاء</button>
-                <button type="submit" className="primary-btn">إنشاء الحساب</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {loading ? (
         <div className="loading-state">جاري تحميل المشتركين...</div>
