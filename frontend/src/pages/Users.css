@@ -110,8 +110,9 @@ tr:hover td {
   }
 
   tr:hover {
-    border-color: var(--accent);
-    transform: translateY(-2px);
+    border-color: rgba(var(--accent-rgb), 0.6);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(var(--accent-rgb), 0.15);
   }
 
   td {
