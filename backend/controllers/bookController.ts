@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { Request, Response } from 'express';
+import fs from 'fs';
+import path from 'path';
 import User from '../models/User';
 import Book, { BookStatus } from '../models/Book';
 import FinishedBook from '../models/FinishedBook';
@@ -51,6 +53,7 @@ export const createBook = async (req: Request, res: Response) => {
   }
 };
 
+
 // @desc  Delete a book (admin)
 export const deleteBook = async (req: Request, res: Response) => {
   try {
@@ -58,12 +61,22 @@ export const deleteBook = async (req: Request, res: Response) => {
     if (!book) {
       return res.status(404).json({ message: 'الكتاب غير موجود' });
     }
+
+    // Delete local file if it exists
+    if (book.pdfUrl && book.pdfUrl.startsWith('/uploads/')) {
+      const filePath = path.join(process.cwd(), book.pdfUrl);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
     await book.deleteOne();
     res.json({ message: 'تم حذف الكتاب بنجاح' });
   } catch (error) {
     res.status(500).json({ message: 'خطأ في حذف الكتاب' });
   }
 };
+
 
 // @desc  Toggle book open/closed status (admin)
 export const toggleBookStatus = async (req: Request, res: Response) => {

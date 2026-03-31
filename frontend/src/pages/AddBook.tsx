@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { ArrowRight, Save } from 'lucide-react';
+import { ArrowRight, Save, Upload, FileText, CheckCircle2, X } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 import './Books.css';
@@ -54,6 +54,10 @@ const AddBook = () => {
         }
       }
 
+      if (!finalPdfUrl) {
+        throw new Error('يرجى اختيار ملف أو إدخال رابط الكتاب');
+      }
+
       await api.post('/books', {
         title,
         pdfUrl: finalPdfUrl,
@@ -79,7 +83,7 @@ const AddBook = () => {
         </button>
         <div>
           <h1>إضافة كتاب جديد</h1>
-          <p className="subtitle">أدخل بيانات الكتاب ثم سيتم إعادتك تلقائياً إلى صفحة الكتب بعد الحفظ</p>
+          <p className="subtitle">أدخل بيانات الكتاب وأرفق الملف المطلوب لنشره للمشتركين</p>
         </div>
       </div>
 
@@ -89,7 +93,13 @@ const AddBook = () => {
         <form onSubmit={handleSubmit} className="add-book-form book-modal-form">
           <div className="form-group">
             <label>عنوان الكتاب *</label>
-            <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="مثال: كتاب الأخلاق الإسلامية" />
+            <input 
+              type="text" 
+              required 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+              placeholder="مثال: كتاب الأخلاق الإسلامية" 
+            />
           </div>
 
           <div className="form-group">
@@ -104,20 +114,38 @@ const AddBook = () => {
           </div>
 
           <div className={`form-group file-upload-group ${selectedFile ? 'has-file' : ''}`}>
-            <label className="file-upload-trigger">
-              <span className="file-upload-button">اختر ملف من جهازك</span>
-              <span className="file-upload-note">أو اسحب الملف وأفلته هنا (PDF, DOC)</span>
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx,.epub"
-                onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                className="file-input"
-              />
-            </label>
-
-            {selectedFile && (
-              <div className="selected-file-name">
-                ✅ تم اختيار: {selectedFile.name}
+            {!selectedFile ? (
+              <label className="file-upload-trigger">
+                <Upload size={32} className="upload-icon" style={{ color: 'var(--accent)' }} />
+                <span className="file-upload-button">اختر ملف من جهازك</span>
+                <span className="file-upload-note">PDF, DOC, DOCX, EPUB (بحد أقصى 10MB)</span>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.epub"
+                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                  className="file-input"
+                />
+              </label>
+            ) : (
+              <div className="selected-file-preview">
+                <div className="file-info-header">
+                  <FileText size={24} style={{ color: 'var(--accent)' }} />
+                  <div className="file-details">
+                    <span className="name">{selectedFile.name}</span>
+                    <span className="size">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="remove-file-btn"
+                    onClick={() => setSelectedFile(null)}
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+                <div className="success-tag">
+                  <CheckCircle2 size={14} />
+                  جاهز للرفع
+                </div>
               </div>
             )}
           </div>
@@ -133,16 +161,18 @@ const AddBook = () => {
             </div>
           </div>
 
-          <div className="form-group checkbox-group book-checkbox-group">
-            <input
-              type="checkbox"
-              id="markFinished"
-              checked={markAsFinishedForAll}
-              onChange={(e) => setMarkAsFinishedForAll(e.target.checked)}
-              className="book-checkbox-input"
-            />
+          <div className="book-checkbox-group">
             <label htmlFor="markFinished" className="book-checkbox-label">
               قديم
+            </label>
+            <label className="premium-switch">
+              <input
+                type="checkbox"
+                id="markFinished"
+                checked={markAsFinishedForAll}
+                onChange={(e) => setMarkAsFinishedForAll(e.target.checked)}
+              />
+              <span className="switch-slider"></span>
             </label>
           </div>
 
@@ -151,8 +181,17 @@ const AddBook = () => {
               إلغاء
             </button>
             <button type="submit" className="primary-btn" disabled={submitting}>
-              <Save size={18} />
-              {submitting ? 'جاري الحفظ...' : 'حفظ وإدراج'}
+              {submitting ? (
+                <>
+                  <div className="loader-spinner"></div>
+                  جاري الحفظ...
+                </>
+              ) : (
+                <>
+                  <Save size={18} />
+                  حفظ وإدراج الكتاب
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -162,3 +201,4 @@ const AddBook = () => {
 };
 
 export default AddBook;
+
