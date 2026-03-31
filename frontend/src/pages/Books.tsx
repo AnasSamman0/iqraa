@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { BookOpen, Search, Plus, Trash2, Lock, Unlock } from 'lucide-react';
+import { BookOpen, Search, Plus, Trash2, Lock, Unlock, Calendar } from 'lucide-react';
+
 import { Link } from 'react-router-dom';
 import api from '../api';
 import './Books.css';
@@ -88,32 +89,35 @@ const Books = () => {
             <div key={book._id} className="book-card-wrapper">
               <Link to={`/books/${book._id}`} className="book-card-link">
                 <div className="book-card">
+                  <span className={`status-badge-absolute ${book.status}`}>
+                    {book.status === 'open' ? 'مفتوح الآن' : 'مغلق'}
+                  </span>
                   <div 
                     className="book-cover-placeholder"
                     style={book.coverUrl ? { 
                       backgroundImage: `url(${getFullUrl(book.coverUrl)})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center'
                     } : {}}
                   >
-                    {!book.coverUrl && <BookOpen size={40} color="var(--accent)" />}
-                    {book.coverUrl && <div className="cover-overlay"></div>}
+                    {!book.coverUrl && <BookOpen size={48} color="rgba(255,255,255,0.4)" strokeWidth={1.5} />}
+                    <div className="cover-overlay"></div>
                   </div>
                   <div className="book-info">
+                    <div className="book-tag">كتاب المقرر</div>
                     <h3>{book.title}</h3>
-                    <div className="book-meta">
-                      <span className={`status-badge ${book.status}`}>
-                        {book.status === 'open' ? 'مفتوح' : 'مغلق'}
-                      </span>
-                      {book.startDate && (
-                        <span className="date">
-                          {new Date(book.startDate).toLocaleDateString('ar-SA')}
-                        </span>
-                      )}
+                    <div className="book-meta-footer">
+                      <div className="meta-item">
+                        <Calendar size={14} />
+                        <span>{book.startDate ? new Date(book.startDate).toLocaleDateString('ar-SA') : 'قريباً'}</span>
+                      </div>
+                      <div className="meta-item">
+                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: book.status === 'open' ? '#34d399' : '#94a3b8' }}></div>
+                        <span>{book.status === 'open' ? 'متاح' : 'مكتمل'}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               </Link>
+
 
               {user?.role === 'admin' && (
                 <div className="book-admin-actions">

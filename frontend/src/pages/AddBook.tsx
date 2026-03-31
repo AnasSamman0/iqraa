@@ -1,9 +1,13 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { ArrowRight, Save, Upload, FileText, CheckCircle2, X, Image as ImageIcon } from 'lucide-react';
+import { ArrowRight, Save, Upload, FileText, CheckCircle2, X, Image as ImageIcon, Calendar } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../api';
+import * as pdfjsLib from 'pdfjs-dist';
 import './Books.css';
+
+// Set worker for PDF.js
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
 
 const AddBook = () => {
   const { user } = useContext(AuthContext);
@@ -16,11 +20,52 @@ const AddBook = () => {
   const [markAsFinishedForAll, setMarkAsFinishedForAll] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedCover, setSelectedCover] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [isGeneratingThumb, setIsGeneratingThumb] = useState(false);
   const [error, setError] = useState('');
 
   if (user?.role !== 'admin') {
     return <Navigate to="/books" replace />;
   }
+
+  // Handle automatic PDF thumbnail generation
+  useEffect(() => {
+    const generateThumbnail = async () => {
+      if (!selectedFile || selectedFile.type !== 'application/pdf' || selectedCover) {
+        return;
+      }
+
+      setIsGeneratingThumb(true);
+      try {
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const page = await pdf.getPage(1);
+        
+        const viewport = page.getViewport({ scale: 0.5 });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        await page.render({ canvasContext: context!, viewport }).promise;
+        
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const file = new File([blob], 'cover.jpg', { type: 'image/jpeg' });
+            setSelectedCover(file);
+            setCoverPreview(canvas.toDataURL('image/jpeg'));
+          }
+        }, 'image/jpeg', 0.85);
+
+      } catch (err) {
+        console.error('Error generating thumbnail:', err);
+      } finally {
+        setIsGeneratingThumb(false);
+      }
+    };
+
+    generateThumbnail();
+  }, [selectedFile, selectedCover]);
 
   const uploadFile = async (file: File) => {
     const formData = new FormData();
@@ -84,7 +129,7 @@ const AddBook = () => {
         </button>
         <div>
           <h1>إضافة كتاب جديد</h1>
-          <p className="subtitle">أدخل بيانات الكتاب وأرفق الملف المطلوب لنشره للمشتركين</p>
+          <p className="subtitle">أدخل بيانات الكتاب وسيتم استخراج الغلاف تلقائياً من أول صفحة</p>
         </div>
       </div>
 
@@ -105,7 +150,7 @@ const AddBook = () => {
 
           <div className="form-row">
             <div className="form-group">
-              <label>رابط الكتاب (Google Drive أو ويب)</label>
+              <label>رابط الكتاب (أو ارفق ملفاً أدناه)</label>
               <input
                 type="text"
                 value={pdfUrl}
@@ -121,17 +166,20 @@ const AddBook = () => {
           </div>
 
           <div className="upload-sections-grid">
-            {/* Book File Section */}
             <div className={`form-group file-upload-group ${selectedFile ? 'has-file' : ''}`}>
-              <label className="section-small-label">ملف الكتاب (PDF/EPUB)</label>
+              <label className="section-small-label">ملف الكتاب (PDF)</label>
               {!selectedFile ? (
                 <label className="file-upload-trigger small">
                   <Upload size={24} style={{ color: 'var(--accent)' }} />
                   <span className="file-upload-button">اختر ملف</span>
                   <input
                     type="file"
-                    accept=".pdf,.doc,.docx,.epub"
-                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                    accept=".pdf"
+                    onChange={(e) => {
+                      setSelectedFile(e.target.files?.[0] || null);
+                      setSelectedCover(null); // Reset cover to allow auto-gen
+                      setCoverPreview(null);
+                    }}
                     className="file-input"
                   />
                 </label>
@@ -140,35 +188,27 @@ const AddBook = () => {
                   <div className="file-info-header">
                     <FileText size={20} style={{ color: 'var(--accent)' }} />
                     <span className="name-brief">{selectedFile.name}</span>
-                    <button type="button" className="remove-file-btn" onClick={() => setSelectedFile(null)}><X size={14} /></button>
+                    <button type="button" className="remove-file-btn" onClick={() => { setSelectedFile(null); setSelectedCover(null); setCoverPreview(null); }}><X size={14} /></button>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Cover Image Section */}
             <div className={`form-group file-upload-group ${selectedCover ? 'has-file' : ''}`}>
-              <label className="section-small-label">غلاف الكتاب (اختياري)</label>
-              {!selectedCover ? (
-                <label className="file-upload-trigger small">
-                  <ImageIcon size={24} style={{ color: 'var(--accent)' }} />
-                  <span className="file-upload-button">اختر صورة</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setSelectedCover(e.target.files?.[0] || null)}
-                    className="file-input"
-                  />
-                </label>
-              ) : (
-                <div className="selected-file-preview mini">
-                  <div className="file-info-header">
-                    <ImageIcon size={20} style={{ color: 'var(--accent)' }} />
-                    <span className="name-brief">{selectedCover.name}</span>
-                    <button type="button" className="remove-file-btn" onClick={() => setSelectedCover(null)}><X size={14} /></button>
-                  </div>
+              <label className="section-small-label">غلاف الكتاب (تلقائي)</label>
+              <div className="selected-file-preview mini">
+                <div className="file-info-header" style={{ height: 50 }}>
+                  {isGeneratingThumb ? (
+                    <div className="loader-spinner" style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }}></div>
+                  ) : coverPreview ? (
+                    <img src={coverPreview} alt="Preview" style={{ height: 40, width: 30, borderRadius: 4, objectFit: 'cover' }} />
+                  ) : (
+                    <ImageIcon size={20} style={{ color: 'var(--text-muted)' }} />
+                  )}
+                  <span className="name-brief">{selectedCover ? 'تم استخراج الغلاف' : 'سيتم استخراجه من الملف'}</span>
+                  {selectedCover && <button type="button" className="remove-file-btn" onClick={() => { setSelectedCover(null); setCoverPreview(null); }}><X size={14} /></button>}
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
@@ -197,7 +237,7 @@ const AddBook = () => {
             <button type="button" className="cancel-btn entry-cancel-btn" onClick={() => navigate('/books')}>
               إلغاء
             </button>
-            <button type="submit" className="primary-btn" disabled={submitting}>
+            <button type="submit" className="primary-btn" disabled={submitting || isGeneratingThumb}>
               {submitting ? (
                 <>
                   <div className="loader-spinner"></div>
@@ -218,5 +258,6 @@ const AddBook = () => {
 };
 
 export default AddBook;
+
 
 
