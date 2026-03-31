@@ -217,8 +217,9 @@
 
   .main-content {
     width: 100%;
-    min-height: calc(100dvh - 60px);
+    min-height: calc(100dvh - 64px);
     overflow-y: visible;
+    padding-bottom: env(safe-area-inset-bottom, 24px); /* حماية للمسافة السفلية في الموبايل */
   }
 
   .mobile-topbar {

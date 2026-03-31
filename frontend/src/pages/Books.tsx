@@ -148,15 +148,58 @@ const Books = () => {
                 />
               </div>
 
-              <div className="form-group" style={{ border: '2px dashed var(--border-color)', padding: '15px', borderRadius: '12px', textAlign: 'center', background: selectedFile ? 'rgba(var(--accent-rgb), 0.05)' : 'transparent' }}>
-                <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>أو ارفع ملف من جهازك</label>
-                <input 
-                  type="file" 
-                  accept=".pdf,.doc,.docx,.epub" 
-                  onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                  className="file-input"
-                />
-                {selectedFile && <p style={{ marginTop: '5px', fontSize: '0.8rem', color: 'var(--accent)' }}>ملف مختار: {selectedFile.name}</p>}
+              <div className="form-group file-upload-group" style={{ 
+                border: '2px dashed var(--border-color)', 
+                padding: '24px 16px', 
+                borderRadius: '16px', 
+                textAlign: 'center', 
+                background: selectedFile ? 'rgba(var(--accent-rgb), 0.05)' : 'var(--bg-tertiary)',
+                transition: 'var(--transition)',
+                cursor: 'pointer',
+                position: 'relative'
+              }}>
+                <label style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ 
+                    background: 'var(--bg-secondary)', 
+                    padding: '10px 20px', 
+                    borderRadius: '12px', 
+                    border: '1px solid var(--border-color)',
+                    color: 'var(--accent)',
+                    fontWeight: 'bold',
+                    display: 'inline-block'
+                  }}>
+                    اختر ملف من جهازك
+                  </span>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>أو اسحب الملف وأفلته هنا (PDF, DOC)</span>
+                  
+                  <input 
+                    type="file" 
+                    accept=".pdf,.doc,.docx,.epub" 
+                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                    className="file-input"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                      opacity: 0,
+                      cursor: 'pointer'
+                    }}
+                  />
+                </label>
+                {selectedFile && (
+                  <div style={{ 
+                    marginTop: '16px', 
+                    padding: '10px', 
+                    background: 'rgba(16, 185, 129, 0.1)', 
+                    borderRadius: '8px',
+                    color: '#34d399',
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold'
+                  }}>
+                    ✅ تم اختيار: {selectedFile.name}
+                  </div>
+                )}
               </div>
 
               <div className="form-row">
