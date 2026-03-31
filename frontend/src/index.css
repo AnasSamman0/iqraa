@@ -20,6 +20,21 @@
   --glass-blur: 16px;
 }
 
+body:not(.dark) {
+  --bg-primary: #f4f7fb;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #eef2f7;
+  --accent: #4f46e5;
+  --accent-rgb: 79, 70, 229;
+  --accent-glow: rgba(79, 70, 229, 0.35);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: rgba(15, 23, 42, 0.12);
+  --card-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(15, 23, 42, 0.1);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -52,6 +67,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+body:not(.dark) {
+  background-image:
+    radial-gradient(at 0% 0%, rgba(var(--accent-rgb), 0.12) 0px, transparent 52%),
+    radial-gradient(at 100% 100%, rgba(var(--accent-rgb), 0.09) 0px, transparent 50%);
 }
 
 #root {
@@ -332,9 +353,10 @@ p.subtitle {
   .modal-content {
     max-height: 90vh;
     border-radius: 32px 32px 0 0;
-    padding: 30px 24px env(safe-area-inset-bottom, 24px);
+    padding: 38px 24px env(safe-area-inset-bottom, 24px);
     border-bottom: none;
     animation: bottomSheetSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    scroll-padding-top: 44px;
   }
 
   /* إضافة خط سحب وهمي للمودال في الموبايل */
@@ -348,6 +370,14 @@ p.subtitle {
     height: 5px;
     background: var(--border-color);
     border-radius: 10px;
+  }
+
+  .modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bg-secondary);
+    padding-top: 2px;
   }
 
   @keyframes bottomSheetSlideUp {
@@ -436,6 +466,10 @@ p.subtitle {
 
 /* Mobile Global Fixes */
 @media (max-width: 768px) {
+  .page-header {
+    text-align: center;
+  }
+
   .glass-card {
     padding: 20px;
     border-radius: 18px;
@@ -468,7 +502,7 @@ p.subtitle {
 
   .modal-content {
     border-radius: 24px 24px 0 0;
-    padding: 26px 16px calc(env(safe-area-inset-bottom, 14px) + 12px);
+    padding: 34px 16px calc(env(safe-area-inset-bottom, 14px) + 12px);
     max-height: 92dvh;
   }
 

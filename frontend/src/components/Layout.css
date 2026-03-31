@@ -229,8 +229,8 @@
   }
 
   .mobile-topbar {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
     align-items: center;
     padding: calc(env(safe-area-inset-top, 0px) + 8px) 16px 10px;
     background: rgba(15, 17, 24, 0.85);
@@ -242,6 +242,12 @@
     top: 0;
     z-index: 200;
     min-height: 64px;
+  }
+
+  .mobile-topbar .mobile-logo {
+    justify-self: center;
+    margin-bottom: 0;
+    padding-right: 0;
   }
 
   .menu-toggle {

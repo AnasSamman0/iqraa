@@ -78,6 +78,34 @@ tr:hover td {
 .status-badge.admin { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
 .status-badge.student { background: rgba(16, 185, 129, 0.15); color: #34d399; }
 
+.delete-btn {
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.delete-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* Mobile Card View */
 @media (max-width: 768px) {
   .users-content {
@@ -156,8 +184,10 @@ tr:hover td {
 
   .delete-btn {
     width: 100%;
+    height: auto;
+    min-height: 42px;
     justify-content: center;
-    padding: 14px;
+    padding: 10px 14px;
     background: rgba(239, 68, 68, 0.1);
     border-radius: 12px;
     margin-top: 8px;
