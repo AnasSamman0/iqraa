@@ -235,19 +235,20 @@ const Books = () => {
               {user?.role === 'admin' && (
                 <div className="book-admin-actions">
                   <button
-                    className="toggle-btn"
+                    className="admin-mini-btn"
                     onClick={() => handleToggleStatus(book._id)}
                     title={book.status === 'open' ? 'إغلاق الكتاب' : 'فتح الكتاب'}
                   >
-                    {book.status === 'open' ? <Lock size={14} /> : <Unlock size={14} />}
-                    {book.status === 'open' ? 'إغلاق' : 'فتح'}
+                    {book.status === 'open' ? <Lock size={16} /> : <Unlock size={16} />}
+                    <span>{book.status === 'open' ? 'إغلاق' : 'فتح'}</span>
                   </button>
                   <button
-                    className="delete-book-btn"
+                    className="admin-mini-btn delete"
                     onClick={() => handleDeleteBook(book._id, book.title)}
                     title="حذف الكتاب"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={16} />
+                    <span>حذف</span>
                   </button>
                 </div>
               )}

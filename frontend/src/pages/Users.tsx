@@ -129,27 +129,27 @@ const Users = () => {
             <tbody>
               {users.map((u: any) => (
                 <tr key={u._id}>
-                  <td>
+                  <td data-label="اسم المشارك">
                     <div className="user-name-cell">
-                      <div className="avatar mini">{u.name.charAt(0)}</div>
+                      <div className="avatar">{u.name.charAt(0)}</div>
                       {u.name}
                     </div>
                   </td>
-                  <td>{u.email}</td>
-                  <td>
+                  <td data-label="الحساب">{u.email}</td>
+                  <td data-label="الصلاحية">
                     <span className={`status-badge ${u.role}`}>
                       {getRoleBadge(u.role)}
                     </span>
                   </td>
-                  <td>{new Date(u.createdAt).toLocaleDateString()}</td>
-                  <td>
+                  <td data-label="التاريخ">{new Date(u.createdAt).toLocaleDateString()}</td>
+                  <td data-label="خيارات">
                     <button 
                       className="delete-btn" 
                       onClick={() => handleDelete(u._id)}
                       disabled={u._id === currentUser?._id}
                       title={u._id === currentUser?._id ? "لا يمكنك حذف حسابك الخاص" : "حذف المستخدم"}
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={18} />
                     </button>
                   </td>
                 </tr>
