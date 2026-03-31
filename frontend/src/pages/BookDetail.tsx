@@ -108,8 +108,11 @@ const BookDetail = () => {
       </button>
 
       <div className="book-header-section glass-card">
-        <div className="book-cover-large">
-          <BookOpen size={64} color="var(--accent)" />
+        <div 
+          className="book-cover-large"
+          style={book.coverUrl ? { backgroundImage: `url(${getFullUrl(book.coverUrl)})` } : {}}
+        >
+          {!book.coverUrl && <BookOpen size={64} color="rgba(255,255,255,0.2)" />}
         </div>
         <div className="book-title-info">
           <h1>{book.title}</h1>

@@ -29,7 +29,7 @@ const upload = multer({
   fileFilter: function (req, file, cb) {
     const filetypes = /pdf|doc|docx|epub|jpg|jpeg|png/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    
+
     // Loosen mimetype check as it can be inconsistent across browsers/OS
     // Now including images for cover extraction
     if (extname) {

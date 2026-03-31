@@ -12,6 +12,13 @@ const Dashboard = () => {
   const [suggestedBooks, setSuggestedBooks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const getFullUrl = (url: string) => {
+    if (!url) return '#';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+    return `${baseUrl}${url}`;
+  };
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -138,15 +145,21 @@ const Dashboard = () => {
         </section>
 
         <section className="suggested-section">
-          <h2>كتب مفتوحة للنقاش</h2>
+          <h2>مقررات قيد القراءة</h2>
           <div className="suggested-grid">
             {suggestedBooks.map((b: any) => (
               <Link to={`/books/${b._id}`} key={b._id} className="suggested-book-card glass-card">
-                <Globe size={32} color="var(--accent)" />
+                <div 
+                  className="suggested-cover"
+                  style={b.coverUrl ? { backgroundImage: `url(${getFullUrl(b.coverUrl)})` } : {}}
+                >
+                  {!b.coverUrl && <BookOpen size={20} color="rgba(255,255,255,0.3)" />}
+                </div>
                 <div className="book-text">
                   <h3>{b.title}</h3>
                   <p>شارك تأملاتك الآن</p>
                 </div>
+                <TrendingUp size={16} className="suggested-icon" />
               </Link>
             ))}
           </div>
