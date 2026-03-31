@@ -100,9 +100,7 @@ export const deleteUser = async (req: any, res: Response) => {
     if (user._id.toString() === req.user._id.toString()) {
       return res.status(400).json({ message: 'لا يمكنك حذف حسابك الخاص' });
     }
-    if (user.role === UserRole.ADMIN) {
-      return res.status(400).json({ message: 'لا يمكن حذف حسابات المديرين' });
-    }
+    // Removed the restriction on deleting other admins to allow corrections
     await user.deleteOne();
     res.json({ message: 'تم حذف المستخدم بنجاح' });
   } catch (error) {

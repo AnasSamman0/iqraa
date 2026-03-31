@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { UserPlus, Trash2, X } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 import api from '../api';
 import './Users.css';
 
 const Users = () => {
+  const { user: currentUser } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -144,8 +146,8 @@ const Users = () => {
                     <button 
                       className="delete-btn" 
                       onClick={() => handleDelete(u._id)}
-                      disabled={u.role === 'admin'}
-                      title={u.role === 'admin' ? "لا يمكن حذف مدير" : "حذف المستخدم"}
+                      disabled={u._id === currentUser?._id}
+                      title={u._id === currentUser?._id ? "لا يمكنك حذف حسابك الخاص" : "حذف المستخدم"}
                     >
                       <Trash2 size={16} />
                     </button>
