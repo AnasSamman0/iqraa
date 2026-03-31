@@ -27,18 +27,19 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   fileFilter: function (req, file, cb) {
-    const filetypes = /pdf|doc|docx|epub/;
+    const filetypes = /pdf|doc|docx|epub|jpg|jpeg|png/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     
     // Loosen mimetype check as it can be inconsistent across browsers/OS
-    // Especially for doc/docx/epub which often have varied mimetypes
+    // Now including images for cover extraction
     if (extname) {
       return cb(null, true);
     } else {
-      cb(new Error('PDF, DOC, DOCX, EPUB files only!'));
+      cb(new Error('Only documents (PDF, DOC...) and images (JPG, PNG) are allowed!'));
     }
   },
 });
+
 
 router.post('/', protect, admin, upload.single('book'), (req: any, res) => {
   if (!req.file) {
