@@ -88,8 +88,16 @@ const Books = () => {
             <div key={book._id} className="book-card-wrapper">
               <Link to={`/books/${book._id}`} className="book-card-link">
                 <div className="book-card">
-                  <div className="book-cover-placeholder">
-                    <BookOpen size={40} color="var(--accent)" />
+                  <div 
+                    className="book-cover-placeholder"
+                    style={book.coverUrl ? { 
+                      backgroundImage: `url(${getFullUrl(book.coverUrl)})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    } : {}}
+                  >
+                    {!book.coverUrl && <BookOpen size={40} color="var(--accent)" />}
+                    {book.coverUrl && <div className="cover-overlay"></div>}
                   </div>
                   <div className="book-info">
                     <h3>{book.title}</h3>
@@ -106,6 +114,7 @@ const Books = () => {
                   </div>
                 </div>
               </Link>
+
               {user?.role === 'admin' && (
                 <div className="book-admin-actions">
                   <button
