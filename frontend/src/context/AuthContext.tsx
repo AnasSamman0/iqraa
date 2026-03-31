@@ -30,7 +30,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
       try {
-        setUser(JSON.parse(userInfo));
+        const parsed = JSON.parse(userInfo);
+        // التحقق من صحة البيانات
+        if (parsed && parsed._id && parsed.token) {
+          setUser(parsed);
+        } else {
+          localStorage.removeItem('userInfo');
+        }
       } catch {
         localStorage.removeItem('userInfo');
       }

@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
@@ -14,18 +14,12 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-          <Route path="/login" element={<Login />} />
-          
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="books" element={<Books />} />
-            <Route path="books/:id" element={<BookDetail />} />
-            <Route path="users" element={<Users />} />
-          </Route>
-        </Routes>
-      </Router>
-    </AuthProvider>
+            <Route path="/login" element={<Login />} />
+            <Route path="/*" element={<Layout />}>
+            </Route>
+          </Routes>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

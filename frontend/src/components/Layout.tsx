@@ -1,8 +1,12 @@
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { ThemeContext } from '../context/ThemeContext';
-import { Outlet, Navigate, Link, useLocation } from 'react-router-dom';
-import { BookOpen, Users, LayoutDashboard, LogOut, Moon, Sun, Menu, X } from 'lucide-react';
+import { Navigate, Link, useLocation, Routes, Route } from 'react-router-dom';
+import { BookOpen, Users as UsersIcon, LayoutDashboard, LogOut, Moon, Sun, Menu, X } from 'lucide-react';
+import Dashboard from '../pages/Dashboard';
+import Books from '../pages/Books';
+import BookDetail from '../pages/BookDetail';
+import Users from '../pages/Users';
 import './Layout.css';
 
 const Layout = () => {
@@ -12,7 +16,19 @@ const Layout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (loading) {
-    return <div className="loading-state">جاري التحقق...</div>;
+    return (
+      <div className="loading-screen" style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100dvh',
+        background: 'var(--bg-primary)',
+        color: 'var(--text-secondary)',
+        fontSize: '1.1rem'
+      }}>
+        جاري التحميل...
+      </div>
+    );
   }
 
   if (!user) {
@@ -47,17 +63,17 @@ const Layout = () => {
         </div>
         
         <nav className="nav-menu">
-          <Link to="/dashboard" onClick={closeMenu} className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
+          <Link to="/dashboard" onClick={closeMenu} className={`nav-item ${location.pathname === '/dashboard' || location.pathname === '/' ? 'active' : ''}`}>
             <LayoutDashboard className="nav-icon" />
             لوحة التحكم
           </Link>
-          <Link to="/books" onClick={closeMenu} className={`nav-item ${location.pathname === '/books' ? 'active' : ''}`}>
+          <Link to="/books" onClick={closeMenu} className={`nav-item ${location.pathname.startsWith('/books') ? 'active' : ''}`}>
             <BookOpen className="nav-icon" />
             الكتب والمقررات
           </Link>
           {user.role === 'admin' && (
             <Link to="/users" onClick={closeMenu} className={`nav-item ${location.pathname === '/users' ? 'active' : ''}`}>
-              <Users className="nav-icon" />
+              <UsersIcon className="nav-icon" />
               إدارة المستخدمين
             </Link>
           )}
@@ -83,7 +99,13 @@ const Layout = () => {
       </aside>
 
       <main className="main-content">
-        <Outlet />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/books" element={<Books />} />
+          <Route path="/books/:id" element={<BookDetail />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
       </main>
     </div>
   );
