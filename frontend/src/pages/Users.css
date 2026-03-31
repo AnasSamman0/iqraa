@@ -22,22 +22,28 @@ th {
 }
 
 td {
-  padding: 20px 24px;
+  padding: 16px 20px;
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
+  transition: var(--transition);
 }
 
 td:first-child {
   border-right: 1px solid var(--border-color);
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 td:last-child {
   border-left: 1px solid var(--border-color);
-  border-top-left-radius: 16px;
-  border-bottom-left-radius: 16px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(var(--accent-rgb), 0.2);
 }
 
 .user-name-cell {
@@ -81,13 +87,19 @@ td:last-child {
   }
 
   tr {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     background: var(--bg-secondary);
-    border-radius: 20px;
-    padding: 16px;
+    border-radius: 24px;
+    padding: 20px;
     border: 1px solid var(--border-color);
     position: relative;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+  }
+
+  tr:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
   }
 
   td {

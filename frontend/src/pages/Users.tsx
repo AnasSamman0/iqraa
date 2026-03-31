@@ -59,7 +59,7 @@ const Users = () => {
   };
 
   return (
-    <div className="users-content animate-fade-in relative">
+    <div className="users-content animate-fade-in container">
       <header className="page-header flex-header">
         <div>
           <h1>إدارة المستخدمين</h1>
@@ -72,7 +72,7 @@ const Users = () => {
 
       {/* Add User Modal */}
       {showAddModal && (
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && setShowAddModal(false)}>
           <div className="modal-content">
             <div className="modal-header">
               <h2>إضافة مشترك جديد لـ محراب و كتاب</h2>

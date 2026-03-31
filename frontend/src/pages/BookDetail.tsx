@@ -102,12 +102,12 @@ const BookDetail = () => {
   );
 
   return (
-    <div className="book-detail-content animate-fade-in">
+    <div className="book-detail-content animate-fade-in container">
       <button className="back-btn" onClick={() => navigate('/books')}>
         <ArrowRight size={16} /> العودة للكتب
       </button>
 
-      <div className="book-header-section">
+      <div className="book-header-section glass-card">
         <div className="book-cover-large">
           <BookOpen size={64} color="var(--accent)" />
         </div>
@@ -162,7 +162,7 @@ const BookDetail = () => {
 
         {/* Submission Form: show if student, book open, and no submission yet */}
         {user?.role === 'student' && book.status === 'open' && !mySubmission && (
-          <form onSubmit={handleSubmitReflection} className="submission-form">
+          <form onSubmit={handleSubmitReflection} className="submission-form glass-card">
             <p className="form-hint">
               ⚠️ تأكد من الضغط على "أنهيت قراءة الكتاب" أولاً قبل إضافة مداخلتك
             </p>

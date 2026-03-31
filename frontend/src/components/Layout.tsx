@@ -31,9 +31,10 @@ const Layout = () => {
       </div>
 
       {/* Mobile Overlay */}
-      {mobileMenuOpen && (
-        <div className="sidebar-overlay" onClick={closeMenu}></div>
-      )}
+      <div 
+        className={`sidebar-overlay ${mobileMenuOpen ? 'visible' : ''}`} 
+        onClick={closeMenu}
+      ></div>
 
       <aside className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="logo desktop-logo">

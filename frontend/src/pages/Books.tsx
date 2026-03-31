@@ -111,7 +111,7 @@ const Books = () => {
   };
 
   return (
-    <div className="books-content animate-fade-in">
+    <div className="books-content animate-fade-in container">
       <header className="page-header flex-header">
         <div>
           <h1>المقررات والكتب</h1>
