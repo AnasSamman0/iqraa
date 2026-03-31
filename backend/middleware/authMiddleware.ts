@@ -11,7 +11,7 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as any;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'mihrab_kitab_secret_2026') as any;
       const user = await User.findById(decoded.id).select('-password');
       if (!user) {
         /* istanbul ignore next */

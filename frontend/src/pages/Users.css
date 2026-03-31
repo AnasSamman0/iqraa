@@ -77,50 +77,88 @@ tr:hover td {
 
 /* Mobile Card View */
 @media (max-width: 768px) {
+  .users-content {
+    padding: 16px 0;
+  }
+
+  .table-container {
+    overflow-x: hidden;
+  }
+
   .table-container thead {
     display: none;
   }
-  
-  table, tbody, tr, td {
-    display: block;
+
+  table, tbody {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    gap: 16px;
   }
 
   tr {
-    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
     background: var(--bg-secondary);
-    border-radius: 24px;
+    border-radius: 20px;
     padding: 20px;
     border: 1px solid var(--border-color);
-    position: relative;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     transition: var(--transition);
+    gap: 14px;
   }
 
   tr:hover {
     border-color: var(--accent);
-    transform: translateY(-4px);
+    transform: translateY(-2px);
   }
 
   td {
-    padding: 12px 0;
-    background: transparent;
-    border: none;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    width: 100%;
   }
 
-  td:first-child { border: none; border-radius: 0; }
-  td:last-child { border: none; border-radius: 0; }
+  td:first-child,
+  td:last-child {
+    border: none;
+    border-radius: 0;
+  }
 
   td::before {
     content: attr(data-label);
     font-weight: 600;
     color: var(--text-secondary);
     font-size: 0.85rem;
+    flex-shrink: 0;
   }
 
-  .user-name-cell { gap: 10px; }
-  .delete-btn { width: 100%; justify-content: center; padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 10px; }
+  .user-name-cell {
+    gap: 10px;
+  }
+
+  .delete-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 12px;
+    margin-top: 8px;
+  }
+
+  .flex-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .flex-header .primary-btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

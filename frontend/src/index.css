@@ -347,3 +347,40 @@ p.subtitle {
   color: var(--accent) !important;
   border-right: 4px solid var(--accent) !important;
 }
+
+/* Mobile Global Fixes */
+@media (max-width: 768px) {
+  .glass-card {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .primary-btn {
+    padding: 12px 20px;
+    border-radius: 14px;
+    font-size: 0.95rem;
+  }
+
+  .page-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .page-header .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .loading-state {
+    font-size: 1rem;
+  }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  button, 
+  a, 
+  input, 
+  select, 
+  textarea {
+    min-height: 44px;
+  }
+}
